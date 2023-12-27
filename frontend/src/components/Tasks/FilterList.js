@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Progress from "./Progress";
 import { useSelector } from "react-redux";
+
 const Lists = () => {
-  const properties = [
+  const properties = useMemo(() => [
     {
       name: "To Do",
       bgColor: "bg-custom-blue-1",
@@ -31,7 +32,7 @@ const Lists = () => {
       color: "#12BB23",
       hoverColor: "hover:bg-custom-green-hover",
     },
-  ];
+  ], []);
 
   const [filteredTasks, setFilteredTasks] = useState({});
 
@@ -49,24 +50,23 @@ const Lists = () => {
         ? activeProject.tasks.filter((task) => task.status === prop.name)
         : [];
     });
-    console.log(projects);
+
     setFilteredTasks(tasksByStatus);
-  }, [projects, activeProjectId]);
+  }, [projects, activeProjectId, properties, activeProject]);
 
   return (
     <div className="flex h-screen overflow-hidden">
-      {properties &&
-        properties.map((props) => (
-          <Progress
-            key={props.name}
-            name={props.name}
-            bgColor={props.bgColor}
-            textColor={props.textColor}
-            hoverColor={props.hoverColor}
-            color={props.color}
-            tasks={filteredTasks[props.name]}
-          />
-        ))}
+      {properties.map((props) => (
+        <Progress
+          key={props.name}
+          name={props.name}
+          bgColor={props.bgColor}
+          textColor={props.textColor}
+          hoverColor={props.hoverColor}
+          color={props.color}
+          tasks={filteredTasks[props.name]}
+        />
+      ))}
     </div>
   );
 };
